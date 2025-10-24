@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CartWise - עגלות חכמות</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #dc2626 0%, #dc2626 50%, #ea580c 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.15);
+            padding: 48px;
+            width: 100%;
+            max-width: 512px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .logo {
+            width: 96px;
+            height: 96px;
+            background: linear-gradient(45deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 24px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.3);
+        }
+
+        h1 {
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-size: 2rem;
+            font-weight: 900;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 1.25rem;
+            margin-bottom: 32px;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .action-button {
+            background: linear-gradient(45deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 24px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.4);
+        }
+
+        .icon {
+            width: 40px;
+            height: 40px;
+            margin-left: 16px;
+        }
+
+        .phone-display {
+            background: #f1f5f9;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .phone-number {
+            font-size: 2.5rem;
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            letter-spacing: 0.5rem;
+            color: #1e293b;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .key {
+            height: 80px;
+            font-size: 2rem;
+            font-weight: 700;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .key:hover {
+            background: #f8fafc;
+            transform: scale(1.05);
+        }
+
+        .key:active {
+            transform: scale(0.95);
+        }
+
+        .key.special {
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 1.25rem;
+        }
+
+        .key.action {
+            background: linear-gradient(45deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .status-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 2.5rem;
+            color: white;
+            background: linear-gradient(45deg, #2563eb 0%, #1d4ed8 100%);
+        }
+
+        .status-icon.sms {
+            background: linear-gradient(45deg, #7c3aed 0%, #6d28d9 100%);
+        }
+
+        .loading-spinner {
+            width: 128px;
+            height: 128px;
+            border: 8px solid #f1f5f9;
+            border-top: 8px solid #dc2626;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 32px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-icon {
+            width: 128px;
+            height: 128px;
+            background: linear-gradient(45deg, #059669 0%, #047857 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 32px;
+            font-size: 4rem;
+            color: white;
+            box-shadow: 0 15px 40px rgba(5, 150, 105, 0.3);
+        }
+
+        .locker-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #2563eb;
+            margin: 16px 0;
+        }
+
+        .message-large {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        .alert {
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .alert-info {
+            background: #bee3f8;
+            color: #2c5282;
+            border: 2px solid #90cdf4;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #feb2b2;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px;
+                margin: 10px;
+            }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="alertContainer"></div>
+
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="screen active">
+            <div class="logo">🛒</div>
+            <h1>ברוכים הבאים</h1>
+            <p class="subtitle">מערכת עגלות חכמות</p>
+
+            <button id="takeCartBtn" class="action-button">
+                <span class="icon">🛒</span>
+                לקיחת עגלה
+                <span style="margin-right: 16px;">←</span>
+            </button>
+
+            <button id="returnCartBtn" class="action-button" style="background: linear-gradient(45deg, #059669 0%, #047857 100%); box-shadow: 0 10px 30px rgba(5, 150, 105, 0.3);">
+                <span class="icon">↩️</span>
+                החזרת עגלה
+                <span style="margin-right: 16px;">←</span>
+            </button>
+        </div>
+
+        <!-- Phone Input Screen -->
+        <div id="phoneScreen" class="screen">
+            <button class="back-button" id="backToWelcome">
+                ← חזור
+            </button>
+
+            <div class="status-icon">🛒</div>
+
+            <h1>לקיחת עגלה</h1>
+            <p class="subtitle">הזן את מספר הטלפון שלך</p>
+
+            <div class="phone-display">
+                <div id="phoneDisplay" class="phone-number">__________</div>
+            </div>
+
+            <div class="keypad">
+                <button class="key" data-digit="1">1</button>
+                <button class="key" data-digit="2">2</button>
+                <button class="key" data-digit="3">3</button>
+                <button class="key" data-digit="4">4</button>
+                <button class="key" data-digit="5">5</button>
+                <button class="key" data-digit="6">6</button>
+                <button class="key" data-digit="7">7</button>
+                <button class="key" data-digit="8">8</button>
+                <button class="key" data-digit="9">9</button>
+                <button class="key special" id="deleteBtn">מחק</button>
+                <button class="key" data-digit="0">0</button>
+                <button class="key action" id="submitPhoneBtn">✓</button>
+            </div>
+        </div>
+
+        <!-- SMS Code Screen -->
+        <div id="smsScreen" class="screen">
+            <button class="back-button" id="backToPhone">
+                ← חזור
+            </button>
+
+            <div class="status-icon sms">📱</div>
+
+            <h1>קוד אימות</h1>
+            <p class="subtitle">הזן את הקוד שנשלח ל-<span id="phoneForSMS"></span></p>
+
+            <div class="phone-display">
+                <div id="otpDisplay" class="phone-number">____</div>
+            </div>
+
+            <div class="keypad">
+                <button class="key" data-otp="1">1</button>
+                <button class="key" data-otp="2">2</button>
+                <button class="key" data-otp="3">3</button>
+                <button class="key" data-otp="4">4</button>
+                <button class="key" data-otp="5">5</button>
+                <button class="key" data-otp="6">6</button>
+                <button class="key" data-otp="7">7</button>
+                <button class="key" data-otp="8">8</button>
+                <button class="key" data-otp="9">9</button>
+                <button class="key special" id="deleteOtpBtn">מחק</button>
+                <button class="key" data-otp="0">0</button>
+                <button class="key action" id="submitOtpBtn">✓</button>
+            </div>
+        </div>
+
+        <!-- Processing Screen -->
+        <div id="processingScreen" class="screen">
+            <div class="loading-spinner"></div>
+            <p id="processingMessage" class="message-large">מעבד...</p>
+        </div>
+
+        <!-- Success Screen -->
+        <div id="successScreen" class="screen">
+            <div class="success-icon">🛒</div>
+
+            <p class="locker-number" id="lockerNumber">עגלה 1</p>
+            <p class="message-large">עגלה נפתחה בהצלחה!<br>קח את העגלה ותהנה מקניות</p>
+
+            <div style="background: #dbeafe; border: 2px solid #93c5fd; border-radius: 16px; padding: 24px;">
+                <p style="color: #1e40af; font-weight: 600;">
+                    💡 זכור להחזיר את העגלה לתא המיועד
+                </p>
+            </div>
+        </div>
+
+        <!-- Error Screen -->
+        <div id="errorScreen" class="screen">
+            <div style="width: 128px; height: 128px; background: linear-gradient(45deg, #dc2626 0%, #b91c1c 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 32px; font-size: 4rem; color: white;">
+                ✗
+            </div>
+
+            <p id="errorMessage" class="message-large" style="color: #dc2626;">שגיאה</p>
+            <p class="subtitle">המערכת תחזור למסך הראשי בקרוב.</p>
+        </div>
+
+        <!-- Return Phone Input Screen -->
+        <div id="returnPhoneScreen" class="screen">
+            <button class="back-button" id="backToWelcomeFromReturn">
+                ← חזור
+            </button>
+
+            <div class="status-icon" style="background: linear-gradient(45deg, #059669 0%, #047857 100%);">↩️</div>
+
+            <h1>החזרת עגלה</h1>
+            <p class="subtitle">הזן את מספר הטלפון שלך</p>
+
+            <div class="phone-display">
+                <div id="returnPhoneDisplay" class="phone-number">__________</div>
+            </div>
+
+            <div class="keypad">
+                <button class="key" data-return-digit="1">1</button>
+                <button class="key" data-return-digit="2">2</button>
+                <button class="key" data-return-digit="3">3</button>
+                <button class="key" data-return-digit="4">4</button>
+                <button class="key" data-return-digit="5">5</button>
+                <button class="key" data-return-digit="6">6</button>
+                <button class="key" data-return-digit="7">7</button>
+                <button class="key" data-return-digit="8">8</button>
+                <button class="key" data-return-digit="9">9</button>
+                <button class="key special" id="deleteReturnBtn">מחק</button>
+                <button class="key" data-return-digit="0">0</button>
+                <button class="key action" id="submitReturnPhoneBtn">✓</button>
+            </div>
+        </div>
+
+        <!-- Return Locker Assignment Screen -->
+        <div id="returnLockerScreen" class="screen">
+            <div class="success-icon" style="background: linear-gradient(45deg, #2563eb 0%, #1d4ed8 100%);">🔒</div>
+
+            <p class="message-large">אנא החזר את העגלה למנעול מספר:</p>
+            <p class="locker-number" id="returnLockerNumber">0</p>
+
+            <div class="alert alert-info">
+                <p style="font-size: 1.1rem; margin-bottom: 12px;">📍 הוראות:</p>
+                <p style="line-height: 1.6;">1. גש למנעול המצוין למעלה<br>2. הכנס את העגלה למנעול<br>3. המערכת תזהה אוטומטית את ההחזרה</p>
+            </div>
+
+            <button id="checkReturnBtn" class="action-button" style="margin-top: 24px;">
+                בדוק האם העגלה הוחזרה
+            </button>
+        </div>
+
+        <!-- Return Success Screen -->
+        <div id="returnSuccessScreen" class="screen">
+            <div class="success-icon">✓</div>
+
+            <p class="message-large">העגלה הוחזרה בהצלחה!</p>
+            <p class="subtitle" style="font-size: 1.2rem; color: #059669; font-weight: 600;">תודה שהשתמשת במערכת 🎉</p>
+
+            <div style="background: #d1fae5; border: 2px solid #6ee7b7; border-radius: 16px; padding: 24px; margin-top: 24px;">
+                <p style="color: #065f46; font-weight: 600;">
+                    ✅ העגלה זמינה כעת למשתמשים אחרים
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8002';
+
+        class CartWiseApp {
+            constructor() {
+                this.currentPhone = '';
+                this.currentOtp = '';
+                this.returnPhone = '';
+                this.returnCheckInterval = null;
+                this.authToken = localStorage.getItem('cartwise_auth_token') || '';
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.bindKeyboard();
+            }
+
+            bindEvents() {
+                // Welcome screen
+                document.getElementById('takeCartBtn').addEventListener('click', () => {
+                    this.showScreen('phoneScreen');
+                });
+
+                document.getElementById('returnCartBtn').addEventListener('click', () => {
+                    this.showScreen('returnPhoneScreen');
+                });
+
+                // Back buttons
+                document.getElementById('backToWelcome').addEventListener('click', () => {
+                    this.resetApp();
+                });
+
+                document.getElementById('backToWelcomeFromReturn').addEventListener('click', () => {
+                    this.resetApp();
+                });
+
+                document.getElementById('backToPhone').addEventListener('click', () => {
+                    this.showScreen('phoneScreen');
+                    this.resetOtp();
+                });
+
+                // Phone keypad
+                document.querySelectorAll('[data-digit]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.addPhoneDigit(btn.dataset.digit);
+                    });
+                });
+
+                document.getElementById('deleteBtn').addEventListener('click', () => {
+                    this.deletePhoneDigit();
+                });
+
+                document.getElementById('submitPhoneBtn').addEventListener('click', () => {
+                    this.submitPhone();
+                });
+
+                // OTP keypad
+                document.querySelectorAll('[data-otp]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.addOtpDigit(btn.dataset.otp);
+                    });
+                });
+
+                document.getElementById('deleteOtpBtn').addEventListener('click', () => {
+                    this.deleteOtpDigit();
+                });
+
+                document.getElementById('submitOtpBtn').addEventListener('click', () => {
+                    this.submitOtp();
+                });
+
+                // Return cart keypad
+                document.querySelectorAll('[data-return-digit]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.addReturnPhoneDigit(btn.dataset.returnDigit);
+                    });
+                });
+
+                document.getElementById('deleteReturnBtn').addEventListener('click', () => {
+                    this.deleteReturnPhoneDigit();
+                });
+
+                document.getElementById('submitReturnPhoneBtn').addEventListener('click', () => {
+                    this.submitReturnPhone();
+                });
+
+                document.getElementById('checkReturnBtn').addEventListener('click', () => {
+                    this.checkReturnCompletion();
+                });
+            }
+
+            bindKeyboard() {
+                document.addEventListener('keydown', (e) => {
+                    const activeScreen = document.querySelector('.screen.active');
+                    if (!activeScreen) return;
+
+                    const screenId = activeScreen.id;
+
+                    // Number keys (0-9)
+                    if (e.key >= '0' && e.key <= '9') {
+                        if (screenId === 'phoneScreen') {
+                            this.addPhoneDigit(e.key);
+                        } else if (screenId === 'smsScreen') {
+                            this.addOtpDigit(e.key);
+                        } else if (screenId === 'returnPhoneScreen') {
+                            this.addReturnPhoneDigit(e.key);
+                        }
+                    }
+                    // Backspace/Delete
+                    else if (e.key === 'Backspace' || e.key === 'Delete') {
+                        if (screenId === 'phoneScreen') {
+                            this.deletePhoneDigit();
+                        } else if (screenId === 'smsScreen') {
+                            this.deleteOtpDigit();
+                        } else if (screenId === 'returnPhoneScreen') {
+                            this.deleteReturnPhoneDigit();
+                        }
+                    }
+                    // Enter
+                    else if (e.key === 'Enter') {
+                        if (screenId === 'phoneScreen') {
+                            this.submitPhone();
+                        } else if (screenId === 'smsScreen') {
+                            this.submitOtp();
+                        } else if (screenId === 'returnPhoneScreen') {
+                            this.submitReturnPhone();
+                        } else if (screenId === 'returnLockerScreen') {
+                            this.checkReturnCompletion();
+                        }
+                    }
+                });
+            }
+
+            addPhoneDigit(digit) {
+                if (this.currentPhone.length < 10) {
+                    this.currentPhone += digit;
+                    this.updatePhoneDisplay();
+                }
+            }
+
+            deletePhoneDigit() {
+                if (this.currentPhone.length > 0) {
+                    this.currentPhone = this.currentPhone.slice(0, -1);
+                    this.updatePhoneDisplay();
+                }
+            }
+
+            updatePhoneDisplay() {
+                document.getElementById('phoneDisplay').textContent =
+                    this.currentPhone.padEnd(10, '_');
+            }
+
+            addOtpDigit(digit) {
+                if (this.currentOtp.length < 4) {
+                    this.currentOtp += digit;
+                    this.updateOtpDisplay();
+                }
+            }
+
+            deleteOtpDigit() {
+                if (this.currentOtp.length > 0) {
+                    this.currentOtp = this.currentOtp.slice(0, -1);
+                    this.updateOtpDisplay();
+                }
+            }
+
+            updateOtpDisplay() {
+                document.getElementById('otpDisplay').textContent =
+                    this.currentOtp.padEnd(4, '_');
+            }
+
+            async submitPhone() {
+                if (this.currentPhone.length !== 10) {
+                    this.showAlert('אנא הזן מספר טלפון תקין', 'error');
+                    return;
+                }
+
+                this.showScreen('processingScreen');
+                document.getElementById('processingMessage').textContent = 'בודק אימות...';
+
+                try {
+                    const headers = { 'Content-Type': 'application/json' };
+
+                    // Add auth token if exists
+                    if (this.authToken) {
+                        headers['Authorization'] = `Bearer ${this.authToken}`;
+                    }
+
+                    const response = await fetch(`${API_URL}/auth/request-otp`, {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify({ phone: this.currentPhone })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Check if already authenticated
+                        if (data.already_authenticated) {
+                            // Skip OTP, go straight to cart assignment
+                            this.showAlert('כבר מאומת! מקצה עגלה...', 'success');
+                            await this.assignCartDirectly();
+                        } else {
+                            // Need OTP
+                            this.showScreen('smsScreen');
+                            document.getElementById('phoneForSMS').textContent = this.currentPhone;
+                            this.showAlert('קוד אימות נשלח בהצלחה', 'info');
+                        }
+                    } else {
+                        throw new Error(data.detail || 'שגיאה בשליחת קוד');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    const errorMessage = error.message || 'שגיאה בשליחת קוד. נסה שוב.';
+                    this.showError(errorMessage.replace('Error: ', ''));
+                }
+            }
+
+            async submitOtp() {
+                if (this.currentOtp.length !== 4) {
+                    this.showAlert('אנא הזן קוד בן 4 ספרות', 'error');
+                    return;
+                }
+
+                this.showScreen('processingScreen');
+                document.getElementById('processingMessage').textContent = 'מאמת קוד...';
+
+                try {
+                    // First verify OTP and get auth token
+                    const verifyResponse = await fetch(`${API_URL}/auth/verify-otp`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            phone: this.currentPhone,
+                            otp_code: this.currentOtp
+                        })
+                    });
+
+                    const verifyData = await verifyResponse.json();
+
+                    if (!verifyResponse.ok) {
+                        throw new Error(verifyData.detail || 'קוד שגוי');
+                    }
+
+                    // Save auth token for future use
+                    if (verifyData.auth_token) {
+                        this.authToken = verifyData.auth_token;
+                        localStorage.setItem('cartwise_auth_token', this.authToken);
+                        console.log('Auth token saved');
+                    }
+
+                    // Now assign cart
+                    await this.assignCartDirectly();
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    const errorMessage = error.message || 'קוד שגוי או פג תוקף. נסה שוב.';
+                    this.showError(errorMessage.replace('Error: ', ''));
+                }
+            }
+
+            async assignCartDirectly() {
+                this.showScreen('processingScreen');
+                document.getElementById('processingMessage').textContent = 'פותח עגלה...';
+
+                try {
+                    const headers = { 'Content-Type': 'application/json' };
+
+                    // Add auth token if exists
+                    if (this.authToken) {
+                        headers['Authorization'] = `Bearer ${this.authToken}`;
+                    }
+
+                    const response = await fetch(`${API_URL}/carts/assign`, {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify({
+                            phone: this.currentPhone,
+                            otp_code: this.currentOtp || '0000' // Use dummy OTP if already authenticated
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        document.getElementById('lockerNumber').textContent =
+                            `עגלה ${data.cart.cart_id}`;
+                        this.showScreen('successScreen');
+                        setTimeout(() => this.resetApp(), 8000);
+                    } else {
+                        throw new Error(data.detail || 'שגיאה בהקצאת עגלה');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    const errorMessage = error.message || 'שגיאה בהקצאת עגלה. נסה שוב.';
+                    this.showError(errorMessage.replace('Error: ', ''));
+                }
+            }
+
+            addReturnPhoneDigit(digit) {
+                if (this.returnPhone.length < 10) {
+                    this.returnPhone += digit;
+                    this.updateReturnPhoneDisplay();
+                }
+            }
+
+            deleteReturnPhoneDigit() {
+                if (this.returnPhone.length > 0) {
+                    this.returnPhone = this.returnPhone.slice(0, -1);
+                    this.updateReturnPhoneDisplay();
+                }
+            }
+
+            updateReturnPhoneDisplay() {
+                document.getElementById('returnPhoneDisplay').textContent =
+                    this.returnPhone.padEnd(10, '_');
+            }
+
+            async submitReturnPhone() {
+                if (this.returnPhone.length !== 10) {
+                    this.showAlert('אנא הזן מספר טלפון תקין', 'error');
+                    return;
+                }
+
+                this.showScreen('processingScreen');
+                document.getElementById('processingMessage').textContent = 'מחפש עגלה פעילה...';
+
+                try {
+                    const response = await fetch(`${API_URL}/carts/initiate-return`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ phone: this.returnPhone })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        document.getElementById('returnLockerNumber').textContent = data.locker_number;
+                        this.showScreen('returnLockerScreen');
+                        this.showAlert(data.message, 'info');
+                    } else {
+                        throw new Error(data.detail || 'לא נמצאה עגלה פעילה');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    const errorMessage = error.message || 'שגיאה במציאת עגלה פעילה. נסה שוב.';
+                    this.showError(errorMessage.replace('Error: ', ''));
+                }
+            }
+
+            async checkReturnCompletion() {
+                this.showScreen('processingScreen');
+                document.getElementById('processingMessage').textContent = 'בודק האם העגלה הוחזרה...';
+
+                try {
+                    const response = await fetch(`${API_URL}/carts/complete-return`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ phone: this.returnPhone })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.returned) {
+                        this.showScreen('returnSuccessScreen');
+                        setTimeout(() => this.resetApp(), 8000);
+                    } else if (response.ok && !data.returned) {
+                        this.showScreen('returnLockerScreen');
+                        this.showAlert(data.message, 'info');
+                    } else {
+                        throw new Error(data.detail || 'שגיאה בבדיקת החזרה');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    this.showError('שגיאה בבדיקת ההחזרה. נסה שוב.');
+                }
+            }
+
+            showScreen(screenId) {
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                document.getElementById(screenId).classList.add('active');
+            }
+
+            showAlert(message, type) {
+                const container = document.getElementById('alertContainer');
+                container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+                setTimeout(() => container.innerHTML = '', 5000);
+            }
+
+            showError(message) {
+                document.getElementById('errorMessage').textContent = message;
+                this.showScreen('errorScreen');
+                setTimeout(() => this.resetApp(), 5000);
+            }
+
+            resetOtp() {
+                this.currentOtp = '';
+                this.updateOtpDisplay();
+            }
+
+            resetApp() {
+                this.currentPhone = '';
+                this.currentOtp = '';
+                this.returnPhone = '';
+                this.updatePhoneDisplay();
+                this.updateOtpDisplay();
+                this.updateReturnPhoneDisplay();
+                document.getElementById('alertContainer').innerHTML = '';
+                if (this.returnCheckInterval) {
+                    clearInterval(this.returnCheckInterval);
+                    this.returnCheckInterval = null;
+                }
+                this.showScreen('welcomeScreen');
+            }
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            new CartWiseApp();
+        });
+    </script>
+</body>
+</html>

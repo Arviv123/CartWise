@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CartWise Pro - API Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+        .nav {
+            background: #2d3748;
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav li {
+            margin: 0;
+        }
+
+        .nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 15px 25px;
+            transition: background 0.3s;
+        }
+
+        .nav a:hover {
+            background: #4a5568;
+        }
+
+        /* Content */
+        .content {
+            padding: 40px 20px;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section h2 {
+            color: #2d3748;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .section h3 {
+            color: #4a5568;
+            font-size: 1.8em;
+            margin: 30px 0 15px 0;
+        }
+
+        .section h4 {
+            color: #718096;
+            font-size: 1.3em;
+            margin: 20px 0 10px 0;
+        }
+
+        /* Code blocks */
+        pre {
+            background: #2d3748;
+            color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            direction: ltr;
+            text-align: left;
+        }
+
+        code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .inline-code {
+            background: #edf2f7;
+            color: #e53e3e;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: right;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        /* Boxes */
+        .info-box {
+            background: #ebf8ff;
+            border-right: 4px solid #3182ce;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background: #fffaf0;
+            border-right: 4px solid #ed8936;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .success-box {
+            background: #f0fff4;
+            border-right: 4px solid #38a169;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        /* Endpoint cards */
+        .endpoint {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+
+        .method {
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .method-get { background: #48bb78; color: white; }
+        .method-post { background: #4299e1; color: white; }
+        .method-put { background: #ed8936; color: white; }
+        .method-delete { background: #f56565; color: white; }
+
+        .endpoint-path {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            color: #2d3748;
+        }
+
+        /* Footer */
+        .footer {
+            background: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 60px;
+        }
+
+        /* Status badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin: 0 5px;
+        }
+
+        .badge-success { background: #c6f6d5; color: #22543d; }
+        .badge-warning { background: #feebc8; color: #7c2d12; }
+        .badge-error { background: #fed7d7; color: #742a2a; }
+        .badge-info { background: #bee3f8; color: #2c5282; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🛒 CartWise Pro</h1>
+            <p>תיעוד API מלא - מערכת ניהול עגלות חכמות</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Version 1.0.0 | Last Updated: 2025-10-23</p>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <ul>
+                <li><a href="#overview">סקירה</a></li>
+                <li><a href="#authentication">אימות</a></li>
+                <li><a href="#carts">עגלות</a></li>
+                <li><a href="#rentals">השכרות</a></li>
+                <li><a href="#errors">שגיאות</a></li>
+                <li><a href="#examples">דוגמאות</a></li>
+            </ul>
+        </nav>
+
+        <!-- Content -->
+        <div class="content">
+
+            <!-- Overview Section -->
+            <section id="overview" class="section">
+                <h2>📋 סקירה כללית</h2>
+
+                <p>CartWise Pro API היא REST API המספקת ממשק מלא לניהול מערכת השכרת עגלות קניות חכמות.</p>
+
+                <div class="info-box">
+                    <h4>🌐 Base URL</h4>
+                    <code>http://localhost:8002</code>
+                </div>
+
+                <h3>מאפיינים עיקריים</h3>
+                <ul style="padding-right: 20px; line-height: 2;">
+                    <li>✅ אימות דו-שלבי (OTP) באמצעות SMS</li>
+                    <li>✅ מערכת טוקנים לאימות מתמשך (30 יום)</li>
+                    <li>✅ ניהול עגלות ומנעולים אלקטרוניים</li>
+                    <li>✅ מעקב אחר השכרות פעילות</li>
+                    <li>✅ התראות SMS אוטומטיות</li>
+                    <li>✅ תמיכה ב-RS485 לבקרי CU16</li>
+                </ul>
+
+                <div class="success-box">
+                    <h4>🚀 Quick Start</h4>
+                    <pre><code>// 1. Request OTP
+fetch('http://localhost:8002/auth/request-otp', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({phone: '0501234567'})
+})
+
+// 2. Verify OTP & Get Token
+fetch('http://localhost:8002/auth/verify-otp', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({phone: '0501234567', otp_code: '1234'})
+})
+
+// 3. Use Token for Cart Operations
+fetch('http://localhost:8002/carts/assign', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_TOKEN'
+  },
+  body: JSON.stringify({phone: '0501234567', otp_code: '0000'})
+})</code></pre>
+                </div>
+            </section>
+
+            <!-- Authentication Section -->
+            <section id="authentication" class="section">
+                <h2>🔐 אימות (Authentication)</h2>
+
+                <p>המערכת משתמשת באימות דו-שלבי עם טוכנים לשימוש חוזר.</p>
+
+                <div class="info-box">
+                    <strong>שלב ראשון:</strong> OTP חד-פעמי (פעם אחת)<br>
+                    <strong>שלב שני:</strong> טוקן תקף ל-30 יום (לשימוש חוזר)
+                </div>
+
+                <!-- Request OTP Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method method-post">POST</span>
+                        <span class="endpoint-path">/auth/request-otp</span>
+                    </div>
+                    <p><strong>תיאור:</strong> שלח קוד OTP ל-SMS</p>
+
+                    <h4>Request Body:</h4>
+                    <pre><code>{
+  "phone": "0501234567"
+}</code></pre>
+
+                    <h4>Response (200 OK):</h4>
+                    <pre><code>{
+  "success": true,
+  "message": "קוד אימות נשלח בהצלחה",
+  "expires_in_minutes": 5,
+  "already_authenticated": false
+}</code></pre>
+
+                    <div class="info-box">
+                        <strong>💡 טיפ:</strong> אם שולחים טוקן ב-Authorization header והוא תקף, המערכת תדלג על שליחת SMS!
+                    </div>
+                </div>
+
+                <!-- Verify OTP Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method method-post">POST</span>
+                        <span class="endpoint-path">/auth/verify-otp</span>
+                    </div>
+                    <p><strong>תיאור:</strong> אמת קוד OTP וקבל טוקן אימות</p>
+
+                    <h4>Request Body:</h4>
+                    <pre><code>{
+  "phone": "0501234567",
+  "otp_code": "1234"
+}</code></pre>
+
+                    <h4>Response (200 OK):</h4>
+                    <pre><code>{
+  "success": true,
+  "message": "קוד אומת בהצלחה",
+  "phone": "0501234567",
+  "auth_token": "abc123...",
+  "token_expires_days": 30
+}</code></pre>
+
+                    <div class="success-box">
+                        <strong>✅ שמור את הטוקן!</strong>
+                        <pre><code>localStorage.setItem('cartwise_auth_token', token);</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Carts Section -->
+            <section id="carts" class="section">
+                <h2>🛒 ניהול עגלות (Carts)</h2>
+
+                <!-- Get All Carts -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method method-get">GET</span>
+                        <span class="endpoint-path">/carts</span>
+                    </div>
+                    <p><strong>תיאור:</strong> קבל רשימת כל העגלות</p>
+
+                    <h4>Response (200 OK):</h4>
+                    <pre><code>[
+  {
+    "cart_id": 1,
+    "locker_id": 0,
+    "status": "available",
+    "assigned_to": null,
+    "is_locked": true
+  },
+  {
+    "cart_id": 2,
+    "locker_id": 1,
+    "status": "in_use",
+    "assigned_to": "0501234567",
+    "is_locked": false
+  }
+]</code></pre>
+
+                    <h4>סטטוסים אפשריים:</h4>
+                    <table>
+                        <tr>
+                            <th>Status</th>
+                            <th>משמעות</th>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-success">available</span></td>
+                            <td>עגלה זמינה</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-warning">in_use</span></td>
+                            <td>עגלה בשימוש</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-error">maintenance</span></td>
+                            <td>עגלה בתחזוקה</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Assign Cart -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method method-post">POST</span>
+                        <span class="endpoint-path">/carts/assign</span>
+                    </div>
+                    <p><strong>תיאור:</strong> הקצה עגלה למשתמש (פתח מנעול)</p>
+
+                    <h4>Request Body:</h4>
+                    <pre><code>{
+  "phone": "0501234567",
+  "otp_code": "1234"
+}</code></pre>
+
+                    <h4>Headers (Optional):</h4>
+                    <pre><code>Authorization: Bearer YOUR_TOKEN</code></pre>
+                    <p><em>אם יש טוכן תקף, OTP לא נדרש</em></p>
+
+                    <h4>Response (200 OK):</h4>
+                    <pre><code>{
+  "success": true,
+  "message": "העגלה הוקצתה בהצלחה! אנא החזר עד 18:30",
+  "cart": {
+    "cart_id": 1,
+    "locker_id": 0,
+    "status": "in_use"
+  },
+  "rental_id": 5,
+  "expected_return": "2025-10-23T18:30:00"
+}</code></pre>
+                </div>
+
+                <!-- Initiate Return -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method method-post">POST</span>
+                        <span class="endpoint-path">/carts/initiate-return</span>
+                    </div>
+                    <p><strong>תיאור:</strong> התחל תהליך החזרת עגלה</p>
+
+                    <h4>Request Body:</h4>
+                    <pre><code>{
+  "phone": "0501234567"
+}</code></pre>
+
+                    <h4>Response (200 OK):</h4>
+                    <pre><code>{
+  "success": true,
+  "message": "החזר את העגלה למנעול 2",
+  "locker_number": 2,
+  "locker_id": 1
+}</code></pre>
+                </div>
+
+                <!-- Complete Return -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method method-post">POST</span>
+                        <span class="endpoint-path">/carts/complete-return</span>
+                    </div>
+                    <p><strong>תיאור:</strong> סיים החזרת עגלה</p>
+
+                    <h4>Request Body:</h4>
+                    <pre><code>{
+  "phone": "0501234567"
+}</code></pre>
+
+                    <h4>Response (200 OK):</h4>
+                    <pre><code>{
+  "success": true,
+  "message": "העגלה הוחזרה בהצלחה!",
+  "returned": true
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- Rentals Section -->
+            <section id="rentals" class="section">
+                <h2>📊 ניהול השכרות (Rentals)</h2>
+
+                <!-- Get History -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method method-get">GET</span>
+                        <span class="endpoint-path">/rentals/history</span>
+                    </div>
+                    <p><strong>תיאור:</strong> קבל היסטוריית השכרות</p>
+
+                    <h4>Query Parameters:</h4>
+                    <ul style="padding-right: 20px;">
+                        <li><code>phone</code> (optional) - סינון לפי טלפון</li>
+                        <li><code>limit</code> (optional, default=100) - מספר רשומות</li>
+                    </ul>
+
+                    <h4>Response (200 OK):</h4>
+                    <pre><code>{
+  "rentals": [...],
+  "total_count": 150,
+  "active_count": 3,
+  "late_count": 1
+}</code></pre>
+                </div>
+
+                <!-- Get Active Rentals -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method method-get">GET</span>
+                        <span class="endpoint-path">/rentals/active</span>
+                    </div>
+                    <p><strong>תיאור:</strong> קבל רשימת השכרות פעילות</p>
+                </div>
+
+                <!-- Get My Rental -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method method-get">GET</span>
+                        <span class="endpoint-path">/rentals/my-rental?phone=0501234567</span>
+                    </div>
+                    <p><strong>תיאור:</strong> קבל השכרה פעילה של משתמש</p>
+
+                    <h4>Response (200 OK):</h4>
+                    <pre><code>{
+  "rental": {
+    "rental_id": 5,
+    "cart_id": 1,
+    "user_phone": "0501234567",
+    "status": "active"
+  },
+  "is_late": false,
+  "time_remaining": "1:45:30",
+  "duration": "2:00:00"
+}</code></pre>
+                </div>
+
+                <!-- Get Statistics -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method method-get">GET</span>
+                        <span class="endpoint-path">/rentals/stats/summary</span>
+                    </div>
+                    <p><strong>תיאור:</strong> קבל סטטיסטיקות השכרות</p>
+
+                    <h4>Response (200 OK):</h4>
+                    <pre><code>{
+  "total_rentals": 150,
+  "active_rentals": 3,
+  "overdue_rentals": 5,
+  "late_returns": 12,
+  "average_duration_minutes": 95
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- Errors Section -->
+            <section id="errors" class="section">
+                <h2>⚠️ קודי שגיאה</h2>
+
+                <h3>שגיאות נפוצות</h3>
+
+                <table>
+                    <tr>
+                        <th>Code</th>
+                        <th>שגיאה</th>
+                        <th>פתרון</th>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-error">401</span></td>
+                        <td>קוד שגוי או פג תוקף</td>
+                        <td>בקש OTP חדש</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-warning">400</span></td>
+                        <td>יש לך כבר עגלה פעילה</td>
+                        <td>החזר את העגלה הנוכחית</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-warning">404</span></td>
+                        <td>אין עגלות זמינות</td>
+                        <td>המתן להחזרת עגלה</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-error">500</span></td>
+                        <td>שגיאת שרת</td>
+                        <td>נסה שוב מאוחר יותר</td>
+                    </tr>
+                </table>
+
+                <div class="warning-box">
+                    <h4>⚠️ טיפול בשגיאות</h4>
+                    <pre><code>try {
+  const response = await fetch('/carts/assign', {...});
+  const data = await response.json();
+
+  if (!response.ok) {
+    switch (response.status) {
+      case 400:
+        alert('יש לך עגלה פעילה');
+        break;
+      case 401:
+        alert('קוד שגוי');
+        break;
+      case 404:
+        alert('אין עגלות זמינות');
+        break;
+    }
+    throw new Error(data.detail);
+  }
+} catch (error) {
+  console.error(error);
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- Examples Section -->
+            <section id="examples" class="section">
+                <h2>💡 דוגמאות קוד</h2>
+
+                <h3>דוגמה מלאה - JavaScript</h3>
+                <pre><code>// Complete user flow
+async function completeFlow() {
+  const phone = '0501234567';
+
+  // 1. Request OTP
+  await fetch('/auth/request-otp', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({phone})
+  });
+
+  console.log('📱 Check SMS for OTP');
+  const otp = prompt('Enter OTP:');
+
+  // 2. Verify OTP & Get Token
+  const verifyRes = await fetch('/auth/verify-otp', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({phone, otp_code: otp})
+  });
+
+  const {auth_token} = await verifyRes.json();
+  localStorage.setItem('cartwise_auth_token', auth_token);
+
+  // 3. Assign Cart
+  const assignRes = await fetch('/carts/assign', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth_token}`
+    },
+    body: JSON.stringify({phone, otp_code: '0000'})
+  });
+
+  const cart = await assignRes.json();
+  console.log(`✅ Cart ${cart.cart.cart_id} assigned!`);
+
+  // 4. Return Cart
+  await fetch('/carts/initiate-return', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({phone})
+  });
+
+  await fetch('/carts/complete-return', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({phone})
+  });
+
+  console.log('✅ Cart returned!');
+}
+
+completeFlow();</code></pre>
+
+                <h3>דוגמה - Python</h3>
+                <pre><code>import requests
+
+class CartWiseClient:
+    def __init__(self, base_url='http://localhost:8002'):
+        self.base_url = base_url
+        self.token = None
+
+    def request_otp(self, phone):
+        response = requests.post(
+            f'{self.base_url}/auth/request-otp',
+            json={'phone': phone}
+        )
+        return response.json()
+
+    def verify_otp(self, phone, otp_code):
+        response = requests.post(
+            f'{self.base_url}/auth/verify-otp',
+            json={'phone': phone, 'otp_code': otp_code}
+        )
+        data = response.json()
+        self.token = data['auth_token']
+        return data
+
+    def assign_cart(self, phone):
+        response = requests.post(
+            f'{self.base_url}/carts/assign',
+            headers={'Authorization': f'Bearer {self.token}'},
+            json={'phone': phone, 'otp_code': '0000'}
+        )
+        return response.json()
+
+# Usage
+client = CartWiseClient()
+client.request_otp('0501234567')
+client.verify_otp('0501234567', '1234')
+cart = client.assign_cart('0501234567')
+print(f"Cart {cart['cart']['cart_id']} assigned!")</code></pre>
+            </section>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>CartWise Pro API Documentation</strong></p>
+            <p>Version 1.0.0 | Last Updated: 2025-10-23</p>
+            <p style="margin-top: 10px; opacity: 0.8;">
+                For support: Check logs at <code>logs/cartwise.log</code>
+            </p>
+            <p style="opacity: 0.8;">
+                Interactive API Docs: <a href="http://localhost:8002/docs" style="color: #63b3ed;">http://localhost:8002/docs</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+venv
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache
+
+# Database (will be created in container)
+data/*.db
+data/*.sqlite
+
+# Logs (will be created in container)
+logs/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tests
+tests/
+test_*.py
+
+# Build files
+*.egg-info
+dist/
+build/

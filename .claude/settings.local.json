@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python test_get_status.py:*)",
+      "Bash(timeout:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(tasklist:*)",
+      "Bash(taskkill:*)",
+      "Bash(dir:*)",
+      "Bash(python run_server.py:*)",
+      "Bash(curl:*)",
+      "Bash(start http://localhost:8002)",
+      "Bash(python -c:*)",
+      "Bash(powershell -Command \"Stop-Process -Id 29872 -Force\")",
+      "Bash(powershell -Command \"Stop-Process -Id 24900 -Force\")",
+      "Bash(powershell -Command \"Stop-Process -Id 36288 -Force\")",
+      "Bash(powershell -Command \"Stop-Process -Id 26256 -Force\")",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
