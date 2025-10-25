@@ -16,7 +16,11 @@
       "Bash(powershell -Command \"Stop-Process -Id 24900 -Force\")",
       "Bash(powershell -Command \"Stop-Process -Id 36288 -Force\")",
       "Bash(powershell -Command \"Stop-Process -Id 26256 -Force\")",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
