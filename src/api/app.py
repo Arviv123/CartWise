@@ -16,7 +16,7 @@ from fastapi.staticfiles import StaticFiles
 from core import setup_logging, get_logger, settings
 from hardware.rs485 import RS485Controller
 from api.dependencies import set_lock_controller, init_monitor, shutdown_monitor
-from api.routers import auth_router, carts_router, health_router, rentals_router
+from api.routers import auth_router, carts_router, health_router, rentals_router, agent_router
 
 # Setup logging
 setup_logging()
@@ -53,6 +53,7 @@ def create_app() -> FastAPI:
     app.include_router(auth_router)
     app.include_router(carts_router)
     app.include_router(rentals_router)
+    app.include_router(agent_router)  # Agent communication endpoints
 
     # Mount static files directory
     static_dir = os.path.join(
