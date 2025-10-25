@@ -12,8 +12,13 @@ Protocol Specification (KR-CU16):
 - Protocol: STX + ADDR + CMD + ETX + SUM
 - Each CU16 board controls 16 locks
 
+RS232-to-RS485 Adapter Support:
+- Automatic flow control configuration (DTR/RTS)
+- Half-duplex TX/RX switching
+- Compatible with common adapters (FTDI, StarTech, Prolific, CH340)
+
 Author: CartWise Team
-Version: 2.1.0 (Stabilized with Port Ready Check and Unlock Reset)
+Version: 2.2.0 (RS232-to-RS485 Adapter Support Added)
 """
 
 import serial
@@ -146,8 +151,19 @@ class RS485Controller:
                 parity=serial.PARITY_NONE,
                 stopbits=serial.STOPBITS_ONE,
                 timeout=self.timeout,
+                # RS232-to-RS485 adapter support
+                rtscts=False,    # Disable RTS/CTS flow control
+                dsrdtr=False,    # Disable DSR/DTR flow control
+                xonxoff=False,   # Disable software flow control
             )
+
+            # Set DTR and RTS for RS232-to-RS485 adapter
+            # These control the half-duplex direction switching
+            self.serial.setDTR(True)   # Enable data terminal ready
+            self.serial.setRTS(False)  # Start in receive mode (RTS low)
+
             logger.info(f"Connected to KR-CU16 controller on {self.port} @ {self.baudrate} baud")
+            logger.info("RS232-to-RS485 adapter support enabled (DTR/RTS control)")
             return True
 
         except serial.SerialException as e:
@@ -193,7 +209,15 @@ class RS485Controller:
                     parity=serial.PARITY_NONE,
                     stopbits=serial.STOPBITS_ONE,
                     timeout=self.timeout,
+                    # RS232-to-RS485 adapter support
+                    rtscts=False,
+                    dsrdtr=False,
+                    xonxoff=False,
                 )
+
+                # Set DTR and RTS for RS232-to-RS485 adapter
+                self.serial.setDTR(True)
+                self.serial.setRTS(False)
 
                 time.sleep(0.3)  # Give port time to stabilize
 
@@ -234,7 +258,14 @@ class RS485Controller:
                     parity=serial.PARITY_NONE,
                     stopbits=serial.STOPBITS_ONE,
                     timeout=self.timeout,
+                    # RS232-to-RS485 adapter support
+                    rtscts=False,
+                    dsrdtr=False,
+                    xonxoff=False,
                 )
+                # Set DTR and RTS for RS232-to-RS485 adapter
+                self.serial.setDTR(True)
+                self.serial.setRTS(False)
                 logger.info(f"RS485 port {self.port} reconnected successfully.")
             else:
                 # If the port is open, send a zero-byte ping to check for freeze
@@ -247,6 +278,9 @@ class RS485Controller:
                     self.serial.close()
                     time.sleep(0.2) # Small delay for the OS to release the port
                     self.serial.open()
+                    # Re-set DTR and RTS after reopen
+                    self.serial.setDTR(True)
+                    self.serial.setRTS(False)
                     logger.info(f"RS485 port {self.port} reopened successfully after freeze.")
         except Exception as e:
             logger.error(f"Failed to ensure/reopen RS485 port {self.port}: {e}")
@@ -317,10 +351,19 @@ class RS485Controller:
                 self.serial.reset_output_buffer()
                 logger.debug(f"Buffers cleared (attempt {attempt + 1}/{retry_count})")
 
+                # For RS232-to-RS485: Enable transmit mode
+                if hasattr(self.serial, 'setRTS'):
+                    self.serial.setRTS(True)  # Switch to TX mode
+                    time.sleep(0.01)  # Small delay for adapter to switch
+
                 # Send message
                 self.serial.write(message)
                 self.serial.flush()
                 logger.debug(f">> Sent: {message.hex().upper()}")
+
+                # For RS232-to-RS485: Switch to receive mode
+                if hasattr(self.serial, 'setRTS'):
+                    self.serial.setRTS(False)  # Switch to RX mode
 
                 # Wait for controller to process (increase delay on retries)
                 delay = 0.1 + (attempt * 0.05)  # 0.1s, 0.15s, 0.2s
