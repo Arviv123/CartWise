@@ -1,0 +1,5 @@
+# Minimal Requirements for Raspberry Pi Local Agent
+# Only what's needed to communicate with RS485 and cloud
+
+pyserial==3.5
+requests==2.31.0
